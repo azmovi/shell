@@ -25,7 +25,7 @@ void exec_command(char**);
 int main(void)
 {
     shell_loop();
-    return (0);
+    return 0;
 }
 
 void shell_loop()
@@ -55,7 +55,7 @@ char* inserir_command()
     ok = getline(&command, &size, stdin);
     if(ok == -1)
     {
-        printf("erro");
+        printf("");
         exit(1);
     }
     return command;
@@ -66,12 +66,12 @@ char** split_command(char *command)
     int size = strlen(command);
     char **list_command = (char**)malloc(size * sizeof(char*));
     int indice = 0;
-    char *token = strtok(command, " ");
+    char *token = strtok(command, " \r\n");
     while(token != NULL)
     {
         list_command[indice] = token;
         indice++;
-        token = strtok(NULL, " ");
+        token = strtok(NULL, " \r\n");
     }
     list_command[indice] = NULL;
     return list_command;
@@ -100,41 +100,37 @@ char** split_command(char *command)
  * -1 -> não foi possivel executar
  *
  *
- * ----WAITPID(pid_t, int*, int)----
- *FUNÇÂO:
- *Esperar o execução e morte de um processo para so assim continuar
- *
- * RETORNO:
- * 0 -> sucesso
- * 1 -> erro não especificado
- * 2 -> sistema não aprenseta as funcionalidades necessarias
- * 3 -> limite de tempo
+ * ----WAIT(*status)----
+ *  FUNÇÂO:
+ *  Espera o termino da execução do processo filho
  */
-void exec_command(char **list_command)
+
+void exec_command (char **list_command)
 {
     pid_t pid_filho= fork();
-    int status;
+
     if(pid_filho == 0) // Processo filho
     {
-        status = execvp(list_command[0], list_command);
+        int status = execvp(list_command[0], list_command);
         if(status == -1)
         {
-            perror("Ocorreu um erro na execução!");
+            perror("Erro na execução");
             exit(1);
         }
     }
     else
     {
-
         if(pid_filho > 0) // Processo pai
         {
             // Esperar o processo filho terminar
-            waitpid(pid_filho,&status, )
+            wait(NULL);
 
         }
         else // Erro (pid_filho == -1)
         {
+            perror("Ocorreu um erro na criação do filho");
             exit(1);
         }
     }
 }
+
