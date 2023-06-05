@@ -20,6 +20,7 @@ void shell_loop();
 char* inserir_command();
 char** split_command(char*);
 void exec_command(char**);
+int background(char**);
 
 
 int main(void)
@@ -108,11 +109,12 @@ char** split_command(char *command)
 void exec_command (char **list_command)
 {
     pid_t pid_filho= fork();
+    int bg_flag = background(list_command);
 
     if(pid_filho == 0) // Processo filho
     {
-        int status = execvp(list_command[0], list_command);
-        if(status == -1)
+        int exec_flag = execvp(list_command[0], list_command);
+        if(exec_flag == -1)
         {
             perror("Erro na execução");
             exit(1);
@@ -123,8 +125,10 @@ void exec_command (char **list_command)
         if(pid_filho > 0) // Processo pai
         {
             // Esperar o processo filho terminar
-            wait(NULL);
-
+            if(!bg_flag)
+            {
+                wait(NULL);
+            }
         }
         else // Erro (pid_filho == -1)
         {
@@ -134,3 +138,17 @@ void exec_command (char **list_command)
     }
 }
 
+int background(char **list_command)
+{
+    int indice = 0;
+    while(list_command[indice] != NULL)
+    {
+        if(strcmp(list_command[indice], "&") == 0) // Entra se as duas strings
+        {                                          // forem iguais
+            list_command[indice] = NULL;
+            return 1;
+        }
+        indice++;
+    }
+    return 0;
+}
