@@ -38,7 +38,7 @@ void shell_loop()
         printf("$ ");
         command = inserir_command();
         list_command = split_command(command);
-        if(list_command[0][0] != '\n')
+        if(list_command[0] != " \r\n")
         {
             exec_command(list_command);
         }
