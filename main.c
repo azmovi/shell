@@ -15,12 +15,15 @@
 #include <string.h>
 #include <unistd.h>
 #include <wait.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 void shell_loop();
 char* inserir_command();
 char** split_command(char*);
 void exec_command(char**);
 int background(char**);
+int redirection(char **);
 
 
 int main(void)
@@ -80,7 +83,7 @@ char** split_command(char *command)
 
 /* ----FORK()----
  * FUNÇÂO:
- * Criar processos a partir de um processo PAI 
+ * Criar processos a partir de um processo PAI.
  *
  * RETORNO:
  * -1 -> não foi possivel criar o processo filho
@@ -90,21 +93,46 @@ char** split_command(char *command)
  *
  *----EXEC*()----
  * FUNÇÂO:
- * Transforma um processo filho em um novo programa
+ * Transforma um processo filho em um novo programa.
  * {execl, execle, execlep, execv, execvp}
  * v -> vector
  * l -> list
  * p -> path
- * e -> nao entendi
  *
  * RETORNO:
- * -1 -> não foi possivel executar
+ * -1 -> não foi possivel executar.
  *
  *
- * ----WAIT(*status)----
+ * ----WAIT()----
  *  FUNÇÂO:
- *  Espera o termino da execução do processo filho
+ *  Espera o termino da execução do processo filho.
+ *
+ *
+ *  ----OPEN()----
+ *  FUNÇÂO:
+ *  Acessar um arquivo.
+ *
+ *  FLAGS:
+ *  O_CREAT -> Se o arquivo nao existir ele cria.
+ *  O_TRUNC -> Permite a escrita no arquivo.
+ *  O_RDWR -> Solicita a abetura do arquivo leitura/gravação (?)
+ *
+ *
+ *  ----DUP2()----
+ *  FUNÇÂO:
+ *  Redirencionamento da entrada/saída de um arquivo.
+ *
+ *
+ *  ----CHMOD()----
+ *  FUNÇÂO:
+ *  Ele concede privilegios a um arquivo.
+ *
+ *  FLAGS:
+ *  S_IRUSR -> Permissão de leitura para o criador
+ *  S_IWUSR -> Permissão de escrita para o criador
+ * 
  */
+
 
 void exec_command (char **list_command)
 {
@@ -113,12 +141,45 @@ void exec_command (char **list_command)
 
     if(pid_filho == 0) // Processo filho
     {
+        int redirect_indx = redirection(list_command);
+
+        if (redirect_indx > 0)
+        {
+            int dup_flag;
+            int permit_flag;
+            int arquivo = open(list_command[redirect_indx], O_CREAT | O_TRUNC |
+                    O_RDWR);
+
+            if(arquivo == -1)
+            {
+                perror("Error ao abrir o arquivo");
+                exit(1);
+            }
+
+            dup_flag = dup2(arquivo, STDOUT_FILENO);
+            if(dup_flag == -1)
+            {
+                perror("Error na mudança de output");
+                exit(1);
+            }
+
+            permit_flag = chmod(list_command[redirect_indx], S_IRUSR | S_IWUSR);
+            if(permit_flag == -1)
+            {
+               perror("Arquivo não recebeu privilegios");
+               exit(1);
+            }
+
+            close(arquivo);
+        }
+
         int exec_flag = execvp(list_command[0], list_command);
         if(exec_flag == -1)
         {
             perror("Erro na execução");
             exit(1);
         }
+
     }
     else
     {
@@ -143,12 +204,28 @@ int background(char **list_command)
     int indice = 0;
     while(list_command[indice] != NULL)
     {
-        if(strcmp(list_command[indice], "&") == 0) // Entra se as duas strings
-        {                                          // forem iguais
+        if(strcmp(list_command[indice], "&") == 0)
+        {
             list_command[indice] = NULL;
             return 1;
         }
         indice++;
     }
-    return 0;
+    return 0; // Não existe &
+}
+
+int redirection(char **list_command)
+{
+    int indice = 0;
+    while(list_command[indice] != NULL)
+    {
+        if(strcmp(list_command[indice], ">") == 0)
+        {
+            list_command[indice] = NULL;
+
+            return indice + 1;
+        }
+        indice++;
+    }
+    return 0; // Não existe >
 }
