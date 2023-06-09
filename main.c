@@ -42,7 +42,7 @@ void shell_loop()
         printf("$ ");
         command = inserir_command();
         list_command = split_command(command);
-        if(list_command[0] != " \r\n")
+        if(list_command[0] != " \n")
         {
             exec_command(list_command);
         }
@@ -70,12 +70,12 @@ char** split_command(char *command)
     int size = strlen(command);
     char **list_command = (char**)malloc(size * sizeof(char*));
     int indice = 0;
-    char *token = strtok(command, " \r\n");
+    char *token = strtok(command, " \n");
     while(token != NULL)
     {
         list_command[indice] = token;
         indice++;
-        token = strtok(NULL, " \r\n");
+        token = strtok(NULL, " \n");
     }
     list_command[indice] = NULL;
     return list_command;
