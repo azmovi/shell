@@ -82,17 +82,17 @@ char** split_command(char *command)
 }
 
 /* ----FORK()----
- * FUNÇÂO:
+ * FUNÇÃO:
  * Criar processos a partir de um processo PAI.
  *
  * RETORNO:
- * -1 -> não foi possivel criar o processo filho
+ * -1 -> não foi possível criar o processo filho
  *  0 -> processo seja um filho
  * >0 -> PID do filho criado
  *
  *
  *----EXEC*()----
- * FUNÇÂO:
+ * FUNÇÃO:
  * Transforma um processo filho em um novo programa.
  * {execl, execle, execlep, execv, execvp}
  * v -> vector
@@ -100,16 +100,16 @@ char** split_command(char *command)
  * p -> path
  *
  * RETORNO:
- * -1 -> não foi possivel executar.
+ * -1 -> não foi possível executar.
  *
  *
  * ----WAIT()----
- *  FUNÇÂO:
+ *  FUNÇÃO:
  *  Espera o termino da execução do processo filho.
  *
  *
  *  ----OPEN()----
- *  FUNÇÂO:
+ *  FUNÇÃO:
  *  Acessar um arquivo.
  *
  *  FLAGS:
@@ -119,13 +119,13 @@ char** split_command(char *command)
  *
  *
  *  ----DUP2()----
- *  FUNÇÂO:
- *  Redirencionamento da entrada/saída de um arquivo.
+ *  FUNÇÃO:
+ *  Redirecionamento da entrada/saída de um arquivo.
  *
  *
  *  ----CHMOD()----
- *  FUNÇÂO:
- *  Ele concede privilegios a um arquivo.
+ *  FUNÇÃO:
+ *  Ele concede privilégios a um arquivo.
  *
  *  FLAGS:
  *  S_IRUSR -> Permissão de leitura para o criador
