@@ -1,6 +1,6 @@
 /*
  * Título: Implementação de um shell simplificado 
- * Autor: Antônio Cicero (811455) & Vitor Vechin (RA) 
+ * Autor: Antônio Cicero (811455) & Vitor Vechin (812287)
  * Disciplina: Sistemas Operacionais 
  *
  * Descrição:
