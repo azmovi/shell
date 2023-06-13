@@ -1,17 +1,17 @@
-# Implemntação de um shell simplificado
+# Implementação de um shell simplificado
 ## Casos a serem tratados
 > o simbolo $ representa o prompt do shell 
 - ``` $ prog ``` 
     - Criação de um processo desse programa em foreground
 - ```$ prog &``` 
     - Criação de um processo desse programa em background
-- ```$ prog parâmentros```
+- ```$ prog parâmetros```
     - Criação de um processo desse programa em foreground a partir de 
     especificações
-- ```$ prog parâmentros &```
+- ```$ prog parâmetros &```
     - Criação de um processo desse programa em background a partir de
     especificações
-- ```$ prog [parâmentros] > arquivo```
+- ```$ prog [parâmetros] > arquivo```
     - Criação de um processo desse programa a partir de especificações e envia
     o output gerado para arquivo
 - ```$ prog1 | prog2 ```
